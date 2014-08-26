@@ -1,4 +1,7 @@
-﻿using System.Web;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Web;
 
 namespace Mindscape.Raygun4Net
 {
@@ -20,6 +23,42 @@ namespace Mindscape.Raygun4Net
     public RaygunClient()
       : this(RaygunSettings.Settings.ApiKey)
     {
+    }
+
+    public void Send(AggregateException aggregateException)
+    {
+      Send(aggregateException, null, null);
+    }
+
+    public void Send(AggregateException aggregateException, IList<string> tags)
+    {
+      Send(aggregateException, tags, null);
+    }
+
+    public void Send(AggregateException aggregateException, IList<string> tags, IDictionary userCustomData)
+    {
+      foreach (var exception in aggregateException.InnerExceptions)
+      {
+        Send(exception, tags, userCustomData);
+      }
+    }
+
+    public void SendInBackground(AggregateException aggregateException)
+    {
+      SendInBackground(aggregateException, null, null);
+    }
+
+    public void SendInBackground(AggregateException aggregateException, IList<string> tags)
+    {
+      SendInBackground(aggregateException, tags, null);
+    }
+
+    public void SendInBackground(AggregateException aggregateException, IList<string> tags, IDictionary userCustomData)
+    {
+      foreach (var exception in aggregateException.InnerExceptions)
+      {
+        SendInBackground(exception, tags, userCustomData);
+      }
     }
 
     protected override IRaygunMessageBuilder BuildMessageCore()
